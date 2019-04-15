@@ -48,7 +48,7 @@ namespace GuessingGame
             Console.Write("Is it ");
             var property = Console.ReadLine();
 
-            parent.InsertChild(property, description);
+            parent.InsertChild(property.TrimEnd('?'), description);
 
             SaveKnowledge();
         }

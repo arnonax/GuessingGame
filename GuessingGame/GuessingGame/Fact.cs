@@ -34,13 +34,21 @@ namespace GuessingGame
 
         public void InsertChild(string property, string description)
         {
-            var newElement = _xmlElement.OwnerDocument.CreateElement("Yes");
+            var yesElement = _xmlElement.OwnerDocument.CreateElement("Yes");
+            var noElement = _xmlElement.OwnerDocument.CreateElement("No");
             var oldDescription = Description;
             _xmlElement.Attributes["description"].InnerText = property;
+            AddDescriptionAttribute(noElement, oldDescription);
+            AddDescriptionAttribute(yesElement, description);
+            _xmlElement.AppendChild(yesElement);
+            _xmlElement.AppendChild(noElement);
+        }
+
+        private void AddDescriptionAttribute(XmlElement element, string description)
+        {
             var descriptionAttribute = _xmlElement.OwnerDocument.CreateAttribute("description");
-            descriptionAttribute.Value = oldDescription;
-            newElement.Attributes.Append(descriptionAttribute);
-            _xmlElement.AppendChild(newElement);
+            descriptionAttribute.Value = description;
+            element.Attributes.Append(descriptionAttribute);
         }
     }
 }
