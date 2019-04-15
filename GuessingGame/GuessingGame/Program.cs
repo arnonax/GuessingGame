@@ -6,19 +6,13 @@ namespace GuessingGame
 {
     class Program
     {
-        private static Fact s_rootQuestion = 
-            new Fact("animal", 
-                new Fact("cat"), new Fact("house"));
-
-        private const string DataFilename = "Data.xml";
-
         static void Main()
         {
-            s_rootQuestion = GetExistingKnowledge();
+            InitKnowledge();
             Answer answer;
             do
             {
-                var question = s_rootQuestion;
+                var question = KnowledgeBase.Instance.Root;
 
                 Console.WriteLine("Please think about something and answer the following questions about it");
                 while (true)
@@ -67,25 +61,7 @@ namespace GuessingGame
             if (answer == Answer.No)
                 return;
 
-            var doc = new XmlDocument();
-            SaveFact(s_rootQuestion, doc, doc, "Root");
-            doc.Save(DataFilename);
-        }
-
-        private static void SaveFact(Fact fact, XmlDocument doc, XmlNode parent, string elementName)
-        {
-            if (fact == null)
-                return;
-
-            var element = doc.CreateElement(elementName);
-            var descriptionAttribute = doc.CreateAttribute("description");
-            descriptionAttribute.InnerText = fact.Description;
-            element.Attributes.Append(descriptionAttribute);
-
-            SaveFact(fact.Yes, doc, element, "Yes");
-            SaveFact(fact.No, doc, element, "No");
-
-            parent.AppendChild(element);
+            KnowledgeBase.Instance.SaveData();
         }
 
         private static Answer GetYesNoAnswer()
@@ -108,39 +84,26 @@ namespace GuessingGame
             }
         }
 
-        private static Fact GetExistingKnowledge()
+        private static void InitKnowledge()
         {
             Console.WriteLine("Do you want to load data from file?");
             var answer = GetYesNoAnswer();
             if (answer == Answer.Yes)
             {
-                if (!File.Exists(DataFilename))
+                if (!File.Exists(KnowledgeBase.DataFilename))
+                {
                     Console.WriteLine("Data file does not exist. Starting with initial data.");
+                    KnowledgeBase.Instance.InitBasicData();
+                }
                 else
                 {
-                    LoadData();
+                    KnowledgeBase.Instance.LoadData();
                 }
             }
-            return s_rootQuestion;
-        }
-
-        private static void LoadData()
-        {
-            var doc = new XmlDocument();
-            doc.Load(DataFilename);
-            var rootElement = doc.DocumentElement;
-            s_rootQuestion = ReadFact(rootElement);
-        }
-
-        private static Fact ReadFact(XmlElement rootElement)
-        {
-            if (rootElement == null)
-                return null;
-
-            var yesFact = ReadFact(rootElement["Yes"]);
-            var noFact = ReadFact(rootElement["No"]);
-            var description = rootElement.Attributes["description"].InnerText;
-            return new Fact(description, yesFact, noFact);
+            else
+            {
+                KnowledgeBase.Instance.InitBasicData();
+            }
         }
 
         public static string GetArticle(string description)
@@ -148,6 +111,59 @@ namespace GuessingGame
             return "aeiou".Contains(description.ToLower()[0].ToString())
                 ? "an " + description
                 : "a " + description;
+        }
+    }
+
+    internal class KnowledgeBase
+    {
+        public const string DataFilename = "Data.xml";
+
+        private static KnowledgeBase s_instance;
+        private bool _isDataLoaded;
+        private XmlDocument _doc = new XmlDocument();
+
+        public static KnowledgeBase Instance
+        {
+            get
+            {
+                if (s_instance == null)
+                    s_instance = new KnowledgeBase();
+
+                return s_instance;
+            }
+        }
+
+        public Fact Root
+        {
+            get
+            {
+                if (!_isDataLoaded)
+                    LoadData();
+
+                return new Fact(_doc.DocumentElement);
+            }
+        }
+
+        public void LoadData()
+        {
+            _doc.Load(DataFilename);
+            _isDataLoaded = true;
+        }
+
+        public void InitBasicData()
+        {
+            const string initialData = @"
+<Root description=""animal"">
+  <Yes description=""cat"" />
+  <No description=""house"" />
+</Root>";
+            _doc.LoadXml(initialData);
+            _isDataLoaded = true;
+        }
+
+        public void SaveData()
+        {
+            _doc.Save(DataFilename);
         }
     }
 
@@ -159,24 +175,17 @@ namespace GuessingGame
 
     internal class Fact
     {
-        public Fact(string description, Fact yes, Fact no)
+        private XmlElement _xmlElement;
+
+        public Fact(XmlElement xmlElement)
         {
-            Description = description;
-            Yes = yes;
-            No = no;
+            _xmlElement = xmlElement;
         }
 
-        public Fact(string description)
-            : this(description, null, null)
+        public string Description
         {
-            
+            get { return _xmlElement.GetAttribute("description"); }
         }
-
-        public string Description { get; private set; }
-
-        public Fact Yes { get; private set; }
-
-        public Fact No { get; private set; }
 
         public string GetQuestion()
         {
@@ -185,16 +194,24 @@ namespace GuessingGame
 
         public Fact GetChild(Answer answer)
         {
-            return answer == Answer.Yes ? Yes : No;
+            if (answer == Answer.Yes && _xmlElement["Yes"] != null)
+                return new Fact(_xmlElement["Yes"]);
+
+            if (answer == Answer.No && _xmlElement["No"] != null)
+                return new Fact(_xmlElement["No"]);
+
+            return null;
         }
 
         public void InsertChild(string property, string description)
         {
-            var newFact = new Fact(description);
+            var newElement = _xmlElement.OwnerDocument.CreateElement("Yes");
             var oldDescription = Description;
-            Description = property;
-            Yes = newFact;
-            No = new Fact(oldDescription);
+            _xmlElement.Attributes["description"].InnerText = property;
+            var descriptionAttribute = _xmlElement.OwnerDocument.CreateAttribute("description");
+            descriptionAttribute.Value = oldDescription;
+            newElement.Attributes.Append(descriptionAttribute);
+            _xmlElement.AppendChild(newElement);
         }
     }
 }
