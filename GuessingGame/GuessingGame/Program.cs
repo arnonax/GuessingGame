@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Xml;
 
 namespace GuessingGame
 {
@@ -114,104 +113,9 @@ namespace GuessingGame
         }
     }
 
-    internal class KnowledgeBase
-    {
-        public const string DataFilename = "Data.xml";
-
-        private static KnowledgeBase s_instance;
-        private bool _isDataLoaded;
-        private XmlDocument _doc = new XmlDocument();
-
-        public static KnowledgeBase Instance
-        {
-            get
-            {
-                if (s_instance == null)
-                    s_instance = new KnowledgeBase();
-
-                return s_instance;
-            }
-        }
-
-        public Fact Root
-        {
-            get
-            {
-                if (!_isDataLoaded)
-                    LoadData();
-
-                return new Fact(_doc.DocumentElement);
-            }
-        }
-
-        public void LoadData()
-        {
-            _doc.Load(DataFilename);
-            _isDataLoaded = true;
-        }
-
-        public void InitBasicData()
-        {
-            const string initialData = @"
-<Root description=""animal"">
-  <Yes description=""cat"" />
-  <No description=""house"" />
-</Root>";
-            _doc.LoadXml(initialData);
-            _isDataLoaded = true;
-        }
-
-        public void SaveData()
-        {
-            _doc.Save(DataFilename);
-        }
-    }
-
     internal enum Answer
     {
         Yes,
         No
-    }
-
-    internal class Fact
-    {
-        private XmlElement _xmlElement;
-
-        public Fact(XmlElement xmlElement)
-        {
-            _xmlElement = xmlElement;
-        }
-
-        public string Description
-        {
-            get { return _xmlElement.GetAttribute("description"); }
-        }
-
-        public string GetQuestion()
-        {
-            return $"Is it {Program.GetArticle(Description)}?";
-        }
-
-        public Fact GetChild(Answer answer)
-        {
-            if (answer == Answer.Yes && _xmlElement["Yes"] != null)
-                return new Fact(_xmlElement["Yes"]);
-
-            if (answer == Answer.No && _xmlElement["No"] != null)
-                return new Fact(_xmlElement["No"]);
-
-            return null;
-        }
-
-        public void InsertChild(string property, string description)
-        {
-            var newElement = _xmlElement.OwnerDocument.CreateElement("Yes");
-            var oldDescription = Description;
-            _xmlElement.Attributes["description"].InnerText = property;
-            var descriptionAttribute = _xmlElement.OwnerDocument.CreateAttribute("description");
-            descriptionAttribute.Value = oldDescription;
-            newElement.Attributes.Append(descriptionAttribute);
-            _xmlElement.AppendChild(newElement);
-        }
     }
 }
