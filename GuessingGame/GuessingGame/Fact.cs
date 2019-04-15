@@ -18,7 +18,7 @@ namespace GuessingGame
 
         public string GetQuestion()
         {
-            return $"Is it {Program.GetArticle(Description)}?";
+            return $"Is it {TextUtils.GetArticle(Description)}?";
         }
 
         public Fact GetChild(Answer answer)

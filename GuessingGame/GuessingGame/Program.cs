@@ -44,7 +44,7 @@ namespace GuessingGame
             Console.WriteLine("What was the thing that you thought about?");
             var description = Console.ReadLine();
 
-            Console.WriteLine($"Please phrase a question to while is true for {GetArticle(description)} but false for {GetArticle(parent.Description)}");
+            Console.WriteLine($"Please phrase a question to while is true for {TextUtils.GetArticle(description)} but false for {TextUtils.GetArticle(parent.Description)}");
             Console.Write("Is it ");
             var property = Console.ReadLine();
 
@@ -103,13 +103,6 @@ namespace GuessingGame
             {
                 KnowledgeBase.Instance.InitBasicData();
             }
-        }
-
-        public static string GetArticle(string description)
-        {
-            return "aeiou".Contains(description.ToLower()[0].ToString())
-                ? "an " + description
-                : "a " + description;
         }
     }
 
