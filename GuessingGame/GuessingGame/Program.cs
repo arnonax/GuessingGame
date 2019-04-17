@@ -49,18 +49,6 @@ namespace GuessingGame
             var property = Console.ReadLine();
 
             parent.InsertChild(property.TrimEnd('?'), description);
-
-            SaveKnowledge();
-        }
-
-        private static void SaveKnowledge()
-        {
-            Console.WriteLine("Do you want to save the data?");
-            var answer = GetYesNoAnswer();
-            if (answer == Answer.No)
-                return;
-
-            KnowledgeBase.Instance.SaveData();
         }
 
         private static Answer GetYesNoAnswer()
@@ -85,22 +73,9 @@ namespace GuessingGame
 
         private static void InitKnowledge()
         {
-            Console.WriteLine("Do you want to load data from file?");
-            var answer = GetYesNoAnswer();
-            if (answer == Answer.Yes)
+            if (!File.Exists(KnowledgeBase.DataFilename))
             {
-                if (!File.Exists(KnowledgeBase.DataFilename))
-                {
-                    Console.WriteLine("Data file does not exist. Starting with initial data.");
-                    KnowledgeBase.Instance.InitBasicData();
-                }
-                else
-                {
-                    KnowledgeBase.Instance.LoadData();
-                }
-            }
-            else
-            {
+                Console.WriteLine("Data file does not exist. Starting with initial data.");
                 KnowledgeBase.Instance.InitBasicData();
             }
         }

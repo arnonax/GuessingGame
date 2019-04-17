@@ -1,19 +1,22 @@
-using System.Xml;
-
 namespace GuessingGame
 {
     internal class Fact
     {
-        private XmlElement _xmlElement;
+        private readonly long _id;
 
-        public Fact(XmlElement xmlElement)
+        public Fact(long id)
         {
-            _xmlElement = xmlElement;
+            _id = id;
         }
 
         public string Description
         {
-            get { return _xmlElement.GetAttribute("description"); }
+            get
+            {
+                return
+                    KnowledgeBase.Instance.GetDescriptionByRowId(_id);
+            }
+            set { KnowledgeBase.Instance.UpdateDescription(_id, value); }
         }
 
         public string GetQuestion()
@@ -23,32 +26,15 @@ namespace GuessingGame
 
         public Fact GetChild(Answer answer)
         {
-            if (answer == Answer.Yes && _xmlElement["Yes"] != null)
-                return new Fact(_xmlElement["Yes"]);
-
-            if (answer == Answer.No && _xmlElement["No"] != null)
-                return new Fact(_xmlElement["No"]);
-
-            return null;
+            var childId = KnowledgeBase.Instance.GetChildFact(_id, answer == Answer.Yes);
+            return childId != null ? new Fact(childId.Value) : null;
         }
 
         public void InsertChild(string property, string description)
         {
-            var yesElement = _xmlElement.OwnerDocument.CreateElement("Yes");
-            var noElement = _xmlElement.OwnerDocument.CreateElement("No");
-            var oldDescription = Description;
-            _xmlElement.Attributes["description"].InnerText = property;
-            AddDescriptionAttribute(noElement, oldDescription);
-            AddDescriptionAttribute(yesElement, description);
-            _xmlElement.AppendChild(yesElement);
-            _xmlElement.AppendChild(noElement);
-        }
-
-        private void AddDescriptionAttribute(XmlElement element, string description)
-        {
-            var descriptionAttribute = _xmlElement.OwnerDocument.CreateAttribute("description");
-            descriptionAttribute.Value = description;
-            element.Attributes.Append(descriptionAttribute);
+            KnowledgeBase.Instance.InsertFact(description, _id, true);
+            KnowledgeBase.Instance.InsertFact(Description, _id, false);
+            Description = property;
         }
     }
 }
