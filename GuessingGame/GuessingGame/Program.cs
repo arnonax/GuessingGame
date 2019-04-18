@@ -10,6 +10,7 @@ namespace GuessingGame
             InitKnowledge();
             Answer answer;
             var engine = new GameEngine(KnowledgeBase.Instance, ConsoleUI.Instance);
+            engine.OnWin += () => ConsoleUI.Instance.DeclareWinning();
             do
             {
                 engine.Play();

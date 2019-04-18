@@ -28,7 +28,6 @@ namespace GuessingGame
                 {
                     if (answer == Answer.Yes)
                     {
-                        _consoleUI.DeclareWinning();
                         OnWin?.Invoke();
                     }
                     else

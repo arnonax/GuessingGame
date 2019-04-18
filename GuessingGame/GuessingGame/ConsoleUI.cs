@@ -6,7 +6,6 @@ namespace GuessingGame
     {
         void WriteLine(string text);
         Answer GetYesNoAnswer();
-        void DeclareWinning();
         string AskQuestion(string question);
         string AskUserToComplete(string instruction, string prefix);
     }
