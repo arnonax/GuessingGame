@@ -6,12 +6,7 @@ namespace GuessingGame
     {
         public static ConsoleUI Instance = new ConsoleUI();
 
-        public static Answer GetYesNoAnswer()
-        {
-            return Instance.GetYesNoAnswer1();
-        }
-
-        private Answer GetYesNoAnswer1()
+        public Answer GetYesNoAnswer()
         { 
             while (true)
             {
@@ -31,45 +26,25 @@ namespace GuessingGame
             }
         }
 
-        public static void DeclareWinning()
+        public void DeclareWinning()
         {
-            Instance.DeclareWinning1();
+            Instance.WriteLine("I did it!");
         }
 
-        private void DeclareWinning1()
-        { 
-            WriteLine("I did it!");
-        }
-
-        public static string AskQuestion(string question)
-        {
-            return Instance.AskQuestion1(question);
-        }
-
-        private string AskQuestion1(string question)
+        public string AskQuestion(string question)
         { 
             Console.WriteLine(question);
             return Console.ReadLine();
         }
 
-        public static string AskUserToComplete(string instruction, string prefix)
-        {
-            return Instance.AskUserToComplete1(instruction, prefix);
-        }
-
-        private string AskUserToComplete1(string instruction, string prefix)
+        public string AskUserToComplete(string instruction, string prefix)
         { 
             Console.WriteLine(instruction);
             Console.Write(prefix);
             return Console.ReadLine();
         }
 
-        public static void WriteLine(string text)
-        {
-            Instance.WriteLine1(text);
-        }
-
-        public void WriteLine1(string text)
+        public void WriteLine(string text)
         { 
             Console.WriteLine(text);
         }

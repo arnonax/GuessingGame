@@ -14,7 +14,7 @@ namespace GuessingGame
                 GameEngine.Play();
 
                 Console.WriteLine("Do you want to play again?");
-                answer = ConsoleUI.GetYesNoAnswer();
+                answer = ConsoleUI.Instance.GetYesNoAnswer();
             } while (answer == Answer.Yes);
         }
 
