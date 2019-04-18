@@ -8,7 +8,7 @@ namespace GuessingGame
         {
             var question = KnowledgeBase.Instance.Root;
 
-            Console.WriteLine("Please think about something and answer the following questions about it");
+            ConsoleUI.WriteLine("Please think about something and answer the following questions about it");
             while (true)
             {
                 Console.WriteLine(question.GetQuestion());
@@ -18,7 +18,7 @@ namespace GuessingGame
                 {
                     if (answer == Answer.Yes)
                     {
-                        Console.WriteLine("I did it!");
+                        ConsoleUI.DeclareWinning();
                     }
                     else
                     {
@@ -32,12 +32,10 @@ namespace GuessingGame
 
         private static void AddFact(Fact parent)
         {
-            Console.WriteLine("What was the thing that you thought about?");
-            var description = Console.ReadLine();
+            var description = ConsoleUI.AskQuestion("What was the thing that you thought about?");
 
-            Console.WriteLine($"Please phrase a question to while is true for {TextUtils.GetArticle(description)} but false for {TextUtils.GetArticle(parent.Description)}");
-            Console.Write("Is it ");
-            var property = Console.ReadLine();
+            var instruction = $"Please phrase a question to while is true for {TextUtils.GetArticle(description)} but false for {TextUtils.GetArticle(parent.Description)}";
+            var property = ConsoleUI.AskUserToComplete(instruction, "Is it ");
 
             parent.InsertChild(property.TrimEnd('?'), description);
         }

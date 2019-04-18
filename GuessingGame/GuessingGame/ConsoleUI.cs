@@ -23,5 +23,28 @@ namespace GuessingGame
                 }
             }
         }
+
+        public static void DeclareWinning()
+        {
+            WriteLine("I did it!");
+        }
+
+        public static string AskQuestion(string question)
+        {
+            Console.WriteLine(question);
+            return Console.ReadLine();
+        }
+
+        public static string AskUserToComplete(string instruction, string prefix)
+        {
+            Console.WriteLine(instruction);
+            Console.Write(prefix);
+            return Console.ReadLine();
+        }
+
+        public static void WriteLine(string text)
+        {
+            Console.WriteLine(text);
+        }
     }
 }
