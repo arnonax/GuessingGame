@@ -35,24 +35,28 @@ namespace GuessingGameTests
 
     public class DummyFact : IFact
     {
+        private readonly DummyFact _factIfTrue;
+        private readonly DummyFact _factIfFalse;
+
         public DummyFact(string description, DummyFact factIfTrue, DummyFact factIfFalse)
         {
-            throw new NotImplementedException();
+            _factIfTrue = factIfTrue;
+            _factIfFalse = factIfFalse;
         }
 
         public DummyFact(string description)
         {
-            throw new NotImplementedException();
+            
         }
 
         public string GetQuestion()
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public IFact GetChild(Answer answer)
         {
-            throw new NotImplementedException();
+            return answer == Answer.Yes ? _factIfTrue : _factIfFalse;
         }
 
         public void InsertChild(string property, string description)
