@@ -1,6 +1,8 @@
+using System;
+
 namespace GuessingGame
 {
-    internal class GameEngine
+    public class GameEngine
     {
         private readonly IKnowledgeBase _knowledgeBase;
         private readonly IUserInterface _consoleUI;
@@ -38,7 +40,7 @@ namespace GuessingGame
             }
         }
 
-        private void AddFact(Fact parent)
+        private void AddFact(IFact parent)
         {
             var description = _consoleUI.AskQuestion("What was the thing that you thought about?");
 
@@ -47,5 +49,7 @@ namespace GuessingGame
 
             parent.InsertChild(property.TrimEnd('?'), description);
         }
+
+        public event Action OnWin;
     }
 }

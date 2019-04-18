@@ -1,6 +1,14 @@
 namespace GuessingGame
 {
-    internal class Fact
+    public interface IFact
+    {
+        string GetQuestion();
+        IFact GetChild(Answer answer);
+        void InsertChild(string property, string description);
+        string Description { get; }
+    }
+
+    internal class Fact : IFact
     {
         private readonly long _id;
 
@@ -24,7 +32,7 @@ namespace GuessingGame
             return $"Is it {TextUtils.GetArticle(Description)}?";
         }
 
-        public Fact GetChild(Answer answer)
+        public IFact GetChild(Answer answer)
         {
             var childId = KnowledgeBase.Instance.GetChildFact(_id, answer == Answer.Yes);
             return childId != null ? new Fact(childId.Value) : null;

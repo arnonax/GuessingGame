@@ -29,7 +29,7 @@ namespace GuessingGame
         }
     }
 
-    internal enum Answer
+    public enum Answer
     {
         Yes,
         No

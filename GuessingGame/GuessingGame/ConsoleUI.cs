@@ -2,7 +2,7 @@ using System;
 
 namespace GuessingGame
 {
-    internal interface IUserInterface
+    public interface IUserInterface
     {
         void WriteLine(string text);
         Answer GetYesNoAnswer();

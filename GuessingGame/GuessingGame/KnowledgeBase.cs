@@ -2,9 +2,9 @@ using System.Data.SQLite;
 
 namespace GuessingGame
 {
-    internal interface IKnowledgeBase
+    public interface IKnowledgeBase
     {
-        Fact Root { get; }
+        IFact Root { get; }
     }
 
     internal class KnowledgeBase : IKnowledgeBase
@@ -27,7 +27,7 @@ namespace GuessingGame
             }
         }
 
-        public Fact Root
+        public IFact Root
         {
             get
             {
