@@ -4,6 +4,11 @@ namespace GuessingGame
 {
     internal interface IUserInterface
     {
+        void WriteLine(string text);
+        Answer GetYesNoAnswer();
+        void DeclareWinning();
+        string AskQuestion(string question);
+        string AskUserToComplete(string instruction, string prefix);
     }
 
     internal class ConsoleUI : IUserInterface

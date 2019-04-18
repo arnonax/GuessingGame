@@ -1,17 +1,15 @@
-using System;
-
 namespace GuessingGame
 {
     internal class GameEngine
     {
         private readonly IKnowledgeBase _knowledgeBase;
-        private readonly ConsoleUI _consoleUI;
+        private readonly IUserInterface _consoleUI;
 
         public GameEngine(IKnowledgeBase knowledgeBase, IUserInterface consoleUI)
         {
             // TEMPORARY: this casting should be removed when the interface will have all neccesary members
             _knowledgeBase = knowledgeBase;
-            _consoleUI = (ConsoleUI)consoleUI;
+            _consoleUI = consoleUI;
         }
 
         public void Play()
@@ -21,7 +19,7 @@ namespace GuessingGame
             _consoleUI.WriteLine("Please think about something and answer the following questions about it");
             while (true)
             {
-                Console.WriteLine(question.GetQuestion());
+                _consoleUI.WriteLine(question.GetQuestion());
                 var answer = _consoleUI.GetYesNoAnswer();
                 var nextQuestion = question.GetChild(answer);
                 if (nextQuestion == null)
