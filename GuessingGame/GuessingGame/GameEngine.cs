@@ -4,12 +4,7 @@ namespace GuessingGame
 {
     internal class GameEngine
     {
-        public static void Play()
-        {
-            new GameEngine().Play1();
-        }
-
-        public void Play1()
+        public void Play()
         { 
             var question = KnowledgeBase.Instance.Root;
 
