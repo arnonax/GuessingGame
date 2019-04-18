@@ -4,13 +4,13 @@ namespace GuessingGame
 {
     internal class GameEngine
     {
-        private readonly KnowledgeBase _knowledgeBase;
+        private readonly IKnowledgeBase _knowledgeBase;
         private readonly ConsoleUI _consoleUI;
 
         public GameEngine(IKnowledgeBase knowledgeBase, IUserInterface consoleUI)
         {
             // TEMPORARY: this casting should be removed when the interface will have all neccesary members
-            _knowledgeBase = (KnowledgeBase)knowledgeBase;
+            _knowledgeBase = knowledgeBase;
             _consoleUI = (ConsoleUI)consoleUI;
         }
 

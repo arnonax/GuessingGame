@@ -4,6 +4,7 @@ namespace GuessingGame
 {
     internal interface IKnowledgeBase
     {
+        Fact Root { get; }
     }
 
     internal class KnowledgeBase : IKnowledgeBase
