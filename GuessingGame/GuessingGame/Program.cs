@@ -9,9 +9,10 @@ namespace GuessingGame
         {
             InitKnowledge();
             Answer answer;
+            var engine = new GameEngine(KnowledgeBase.Instance, ConsoleUI.Instance);
             do
             {
-                new GameEngine(KnowledgeBase.Instance, ConsoleUI.Instance).Play();
+                engine.Play();
 
                 Console.WriteLine("Do you want to play again?");
                 answer = ConsoleUI.Instance.GetYesNoAnswer();
