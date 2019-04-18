@@ -2,7 +2,11 @@ using System.Data.SQLite;
 
 namespace GuessingGame
 {
-    internal class KnowledgeBase
+    internal interface IKnowledgeBase
+    {
+    }
+
+    internal class KnowledgeBase : IKnowledgeBase
     {
         public const string DataFilename = "Knowledge.sqlite";
 

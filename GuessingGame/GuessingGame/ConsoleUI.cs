@@ -2,7 +2,11 @@ using System;
 
 namespace GuessingGame
 {
-    internal class ConsoleUI
+    internal interface IUserInterface
+    {
+    }
+
+    internal class ConsoleUI : IUserInterface
     {
         public static ConsoleUI Instance = new ConsoleUI();
 

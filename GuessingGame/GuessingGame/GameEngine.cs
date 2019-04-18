@@ -7,10 +7,11 @@ namespace GuessingGame
         private readonly KnowledgeBase _knowledgeBase;
         private readonly ConsoleUI _consoleUI;
 
-        public GameEngine(KnowledgeBase knowledgeBase, ConsoleUI consoleUI)
+        public GameEngine(IKnowledgeBase knowledgeBase, IUserInterface consoleUI)
         {
-            _knowledgeBase = knowledgeBase;
-            _consoleUI = consoleUI;
+            // TEMPORARY: this casting should be removed when the interface will have all neccesary members
+            _knowledgeBase = (KnowledgeBase)knowledgeBase;
+            _consoleUI = (ConsoleUI)consoleUI;
         }
 
         public void Play()
