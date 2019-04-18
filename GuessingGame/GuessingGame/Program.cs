@@ -11,7 +11,7 @@ namespace GuessingGame
             Answer answer;
             do
             {
-                new GameEngine().Play();
+                new GameEngine(KnowledgeBase.Instance, ConsoleUI.Instance).Play();
 
                 Console.WriteLine("Do you want to play again?");
                 answer = ConsoleUI.Instance.GetYesNoAnswer();

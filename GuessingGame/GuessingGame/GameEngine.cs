@@ -7,10 +7,10 @@ namespace GuessingGame
         private readonly KnowledgeBase _knowledgeBase;
         private readonly ConsoleUI _consoleUI;
 
-        public GameEngine()
+        public GameEngine(KnowledgeBase knowledgeBase, ConsoleUI consoleUI)
         {
-            _knowledgeBase = KnowledgeBase.Instance;
-            _consoleUI = ConsoleUI.Instance;
+            _knowledgeBase = knowledgeBase;
+            _consoleUI = consoleUI;
         }
 
         public void Play()
