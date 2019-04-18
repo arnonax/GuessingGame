@@ -31,14 +31,48 @@ namespace GuessingGameTests
             _engine.Play();
             Assert.IsTrue(computerWon, "Computer should win");
         }
+
+        [TestMethod]
+        public void WhenComputerLooseItLearnsNewFact()
+        {
+            var computerWon = false;
+            _engine.OnWin += () => computerWon = true;
+
+            var houseFact = CreateFakeFact("house");
+            _knowledgeBase.Root = new DummyFact("animal",
+                new DummyFact("cat"),
+                houseFact);
+            A.CallTo(() => _user.GetYesNoAnswer())
+                .Returns(Answer.No);
+            A.CallTo(() => _user.AskQuestion(A<string>._))
+                .Returns("dog");
+            A.CallTo(() => _user.AskUserToComplete(A<string>._, A<string>._))
+                .Returns("barking");
+
+            _engine.Play();
+
+            A.CallTo(() => houseFact.InsertChild("barking", "dog"))
+                .MustHaveHappenedOnceExactly();
+
+            Assert.IsFalse(computerWon);
+        }
+
+        private static IFact CreateFakeFact(string description)
+        {
+            var houseFact = A.Fake<IFact>();
+            A.CallTo(() => houseFact.GetChild(A<Answer>._))
+                .Returns(null);
+            A.CallTo(() => houseFact.Description).Returns(description);
+            return houseFact;
+        }
     }
 
     public class DummyFact : IFact
     {
-        private readonly DummyFact _factIfTrue;
-        private readonly DummyFact _factIfFalse;
+        private readonly IFact _factIfTrue;
+        private readonly IFact _factIfFalse;
 
-        public DummyFact(string description, DummyFact factIfTrue, DummyFact factIfFalse)
+        public DummyFact(string description, IFact factIfTrue, IFact factIfFalse)
         {
             _factIfTrue = factIfTrue;
             _factIfFalse = factIfFalse;
