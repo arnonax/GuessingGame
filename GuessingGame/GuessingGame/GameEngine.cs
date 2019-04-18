@@ -2,10 +2,15 @@ using System;
 
 namespace GuessingGame
 {
-    internal static class GameEngine
+    internal class GameEngine
     {
         public static void Play()
         {
+            new GameEngine().Play1();
+        }
+
+        public void Play1()
+        { 
             var question = KnowledgeBase.Instance.Root;
 
             ConsoleUI.Instance.WriteLine("Please think about something and answer the following questions about it");
