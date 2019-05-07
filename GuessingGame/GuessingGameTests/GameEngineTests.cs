@@ -6,58 +6,25 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GuessingGameTests
 {
     [TestClass]
-    public class GameEngineTests
+    public class GameEngineTests : GameEngineAbstractTests<MemoryKnowledgeBase>
     {
-        private readonly MemoryKnowledgeBase _knowledgeBase;
-        private readonly IUserInterface _user;
-        private readonly GameEngine _engine;
-
         public GameEngineTests()
+            : base(new MemoryKnowledgeBase())
         {
-            _knowledgeBase = new MemoryKnowledgeBase();
-            _user = A.Fake<IUserInterface>();
-            _engine = new GameEngine(_knowledgeBase, _user);
         }
 
-        [TestMethod]
-        public void ComputerWinsWhenUserAnswersYesToAllQuestions()
+        protected override void SetKnowledge(DummyFact knowledgeTree)
         {
-            var computerWon = false;
-            _engine.OnWin += ()=> computerWon = true;
-            _knowledgeBase.Root = new DummyFact("animal",
-                new DummyFact("cat"),
-                new DummyFact("house"));
-            A.CallTo(() => _user.GetYesNoAnswer()).Returns(Answer.Yes);
-            _engine.Play();
-            Assert.IsTrue(computerWon, "Computer should win");
+            _knowledgeBase.Root = knowledgeTree;
         }
 
-        [TestMethod]
-        public void WhenComputerLooseItLearnsNewFact()
+        protected override void AssertFactWasAdded(IFact houseFact, string property, string description)
         {
-            var computerWon = false;
-            _engine.OnWin += () => computerWon = true;
-
-            var houseFact = CreateFakeFact("house");
-            _knowledgeBase.Root = new DummyFact("animal",
-                new DummyFact("cat"),
-                houseFact);
-            A.CallTo(() => _user.GetYesNoAnswer())
-                .Returns(Answer.No);
-            A.CallTo(() => _user.AskQuestion(A<string>._))
-                .Returns("dog");
-            A.CallTo(() => _user.AskUserToComplete(A<string>._, A<string>._))
-                .Returns("barking");
-
-            _engine.Play();
-
-            A.CallTo(() => houseFact.InsertChild("barking", "dog"))
+            A.CallTo(() => houseFact.InsertChild(property, description))
                 .MustHaveHappenedOnceExactly();
-
-            Assert.IsFalse(computerWon);
         }
 
-        private static IFact CreateFakeFact(string description)
+        protected override IFact CreateFakeFact(string description)
         {
             var houseFact = A.Fake<IFact>();
             A.CallTo(() => houseFact.GetChild(A<Answer>._))
@@ -104,7 +71,7 @@ namespace GuessingGameTests
         }
     }
 
-    internal class MemoryKnowledgeBase : IKnowledgeBase
+    public class MemoryKnowledgeBase : IKnowledgeBase
     {
         public IFact Root { get; set; }
     }
