@@ -40,6 +40,7 @@ namespace GuessingGameTests
         private readonly IFact _factIfFalse;
 
         public DummyFact(string description, IFact factIfTrue, IFact factIfFalse)
+            : this(description)
         {
             _factIfTrue = factIfTrue;
             _factIfFalse = factIfFalse;
@@ -47,7 +48,7 @@ namespace GuessingGameTests
 
         public DummyFact(string description)
         {
-            
+            Description = description;
         }
 
         public string GetQuestion()
@@ -65,10 +66,7 @@ namespace GuessingGameTests
             throw new NotImplementedException();
         }
 
-        public string Description
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public string Description { get; }
     }
 
     public class MemoryKnowledgeBase : IKnowledgeBase

@@ -7,7 +7,7 @@ namespace GuessingGame
         IFact Root { get; }
     }
 
-    internal class KnowledgeBase : IKnowledgeBase
+    public class KnowledgeBase : IKnowledgeBase
     {
         public const string DataFilename = "Knowledge.sqlite";
 
@@ -41,7 +41,19 @@ namespace GuessingGame
             }
         }
 
+        // TODO: move to another class
         public void InitBasicData()
+        {
+            CreateDatabase();
+
+            _rootId = InsertRootFact("animal");
+            InsertFact("cat", _rootId, true);
+            InsertFact("house", _rootId, false);
+
+            _isRootLoaded = true;
+        }
+
+        public void CreateDatabase()
         {
             SQLiteConnection.CreateFile(DataFilename);
             const string createTableSql = @"
@@ -51,28 +63,22 @@ create table facts (
     isParentsCorrectAnswer integer,
     description varchar(100))";
             ExecuteCommand(createTableSql);
-
-            _rootId = InsertFact("animal");
-            InsertFact("cat", _rootId, true);
-            InsertFact("house", _rootId, false);
-
-            _isRootLoaded = true;
         }
 
-        private long InsertFact(string description)
+        public long InsertRootFact(string description)
         {
             const string sql = "insert into facts (description) values (?); select last_insert_rowid() from facts";
             return ExecuteCommand<long>(sql, description);
         }
 
-        public void InsertFact(string description, long parentId, bool isParentsCorrectAnswer)
+        public long InsertFact(string description, long parentId, bool isParentsCorrectAnswer)
         {
             const string sql = @"
 insert into facts 
     (description, parentId, isParentsCorrectAnswer) 
     values (?, ?, ?); 
 select last_insert_rowid() from facts";
-            ExecuteCommand(sql, description, parentId, isParentsCorrectAnswer ? 1 : 0);
+            return ExecuteCommand<long>(sql, description, parentId, isParentsCorrectAnswer ? 1 : 0);
         }
 
         private void ExecuteCommand(string sql, params object[] arguments)
@@ -92,7 +98,8 @@ select last_insert_rowid() from facts";
             }
         }
 
-        private T ExecuteCommand<T>(string sql, params object[] arguments)
+        // TODO: move to another class
+        public T ExecuteCommand<T>(string sql, params object[] arguments)
         {
             using (var connection = new SQLiteConnection($"Data Source={DataFilename}"))
             {
