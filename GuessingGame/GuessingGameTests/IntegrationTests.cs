@@ -42,9 +42,20 @@ namespace GuessingGameTests
             AddFact(correctAnswerChild, id, true);
         }
 
-        protected override void AssertFactWasAdded(IFact houseFact, string property, string description)
+        protected override void AssertFactWasAdded(IFact parentFact, string property, string description)
         {
-            throw new System.NotImplementedException();
+            const string getIdByDescriptionQuery = "select id from Facts where description=?";
+            var expectedParentId = KnowledgeBase.Instance.ExecuteCommand<long>(getIdByDescriptionQuery, property);
+            var childId = KnowledgeBase.Instance.ExecuteCommand<long>(getIdByDescriptionQuery, description);
+
+            const string getParentIdQuery = "select parentId from Facts where id = ?";
+            var actualParentId = KnowledgeBase.Instance.ExecuteCommand<long>(getParentIdQuery, childId);
+            Assert.AreEqual(expectedParentId, actualParentId);
+
+            const string isParentsCorrectAnswerQuery = "select isParentsCorrectAnswer from Facts where id = ?";
+            var isParentsCorrectAnswer =
+                KnowledgeBase.Instance.ExecuteCommand<long>(isParentsCorrectAnswerQuery, childId);
+            Assert.AreEqual(1, isParentsCorrectAnswer);
         }
 
         protected override IFact CreateFakeFact(string description)

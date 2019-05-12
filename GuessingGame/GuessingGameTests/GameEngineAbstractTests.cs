@@ -46,8 +46,8 @@ namespace GuessingGameTests
                 houseFact));
             A.CallTo(() => _user.GetYesNoAnswer())
                 .Returns(Answer.No);
-            var property = "barking";
-            var description = "dog";
+            var property = "vehicle";
+            var description = "car";
             A.CallTo(() => _user.AskQuestion(A<string>._))
                 .Returns(description);
             A.CallTo(() => _user.AskUserToComplete(A<string>._, A<string>._))
@@ -60,7 +60,7 @@ namespace GuessingGameTests
             Assert.IsFalse(computerWon);
         }
 
-        protected abstract void AssertFactWasAdded(IFact houseFact, string property, string description);
+        protected abstract void AssertFactWasAdded(IFact parentFact, string property, string description);
         protected abstract IFact CreateFakeFact(string description);
     }
 }

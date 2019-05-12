@@ -81,7 +81,8 @@ select last_insert_rowid() from facts";
             return ExecuteCommand<long>(sql, description, parentId, isParentsCorrectAnswer ? 1 : 0);
         }
 
-        private void ExecuteCommand(string sql, params object[] arguments)
+        // TODO: move to another class
+        public void ExecuteCommand(string sql, params object[] arguments)
         {
             using (var connection = new SQLiteConnection($"Data Source={DataFilename}"))
             {

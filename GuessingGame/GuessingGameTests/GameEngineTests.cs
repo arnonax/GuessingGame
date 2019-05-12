@@ -18,9 +18,9 @@ namespace GuessingGameTests
             _knowledgeBase.Root = knowledgeTree;
         }
 
-        protected override void AssertFactWasAdded(IFact houseFact, string property, string description)
+        protected override void AssertFactWasAdded(IFact parentFact, string property, string description)
         {
-            A.CallTo(() => houseFact.InsertChild(property, description))
+            A.CallTo(() => parentFact.InsertChild(property, description))
                 .MustHaveHappenedOnceExactly();
         }
 
